@@ -40,12 +40,16 @@
                     </button>
                     <div class="flex items-center ms-3">
                         <div>
-                            <button type="button" class="flex text-sm bg-gray-800 rounded-full">
-                                <span class="sr-only">Open user menu</span>
-                                <img class="w-8 h-8 rounded-full"
-                                    src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                                    alt="user photo">
-                            </button @readonly(true)>
+                            <div class="flex items-center mt-2">
+                                <img class="size-10 rounded-full object-cover"
+                                    src="{{ $team->owner->profile_photo_url }}" alt="{{ $team->owner->name }}">
+
+                                <div class="ms-4 leading-tight">
+                                    <div class="text-gray-900 dark:text-white">{{ $team->owner->name }}</div>
+                                    <div class="text-gray-700 dark:text-gray-300 text-sm">{{ $team->owner->email }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="ml-3">
                             @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
