@@ -113,7 +113,8 @@ final class UserTable extends PowerGridComponent
     #[\Livewire\Attributes\On('edit')]
     public function edit($rowId): void
     {
-        $this->js('alert(' . $rowId . ')');
+        // $this->js('alert(' . $rowId . ')');
+        $this->dispatch('userUpdated', rowId: $rowId);
     }
 
     public function actions(User $row): array
