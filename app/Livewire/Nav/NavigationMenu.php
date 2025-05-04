@@ -2,30 +2,14 @@
 
 namespace App\Livewire\Nav;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class NavigationMenu extends Component
 {
     public $items = [], $leadCount = 0, $productsCount = 0, $companiesCount = 0;
-    // protected $listeners = ['leadSaved' => 'updateLeadCount'];
+    protected $listeners = ['updatedNav' => '$refresh'];
 
-
-    // public function updateLeadCount()
-    // {
-    //     // Recalcula el contador
-    //     // Si Jetstream Teams está habilitado, filtra por el equipo actual
-    //     if (method_exists(auth()->user(), 'currentTeam') && auth()->user()->currentTeam) {
-    //         $teamId = auth()->user()->currentTeam->id;
-    //         $this->leadCount = Leads::where('team_id', $teamId)->count();
-    //     } else {
-    //         $this->leadCount = Leads::count();
-    //     }
-
-    //     $this->productsCount = Products::count();
-    //     $this->companiesCount = Companies::count();
-    //     // Reconstruye el menú si necesitas refrescar badges
-    //     $this->buildMenu();
-    // }
 
     protected function buildMenu()
     {
@@ -57,15 +41,6 @@ class NavigationMenu extends Component
 
     public function mount()
     {
-        // if (method_exists(auth()->user(), 'currentTeam') && auth()->user()->currentTeam) {
-        //     $teamId = auth()->user()->currentTeam->id;
-        //     $this->leadCount = Leads::where('team_id', $teamId)->count();
-        // } else {
-        //     $this->leadCount = Leads::count();
-        // }
-
-        // $this->productsCount = Products::count();
-        // $this->companiesCount = Companies::count();
         $this->buildMenu();
     }
     public function render()

@@ -18,6 +18,8 @@ final class UserTable extends PowerGridComponent
 {
     public string $tableName = 'user-table-xqmnkb-table';
 
+    public $listeners = ['refreshUserTable' => '$refresh'];
+
     public function setUp(): array
     {
         $this->showCheckBox();

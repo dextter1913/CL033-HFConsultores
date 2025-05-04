@@ -23,21 +23,9 @@ class EditUserForm extends Component
             if ($user) {
                 $this->name = $user->name;
                 $this->email = $user->email;
-                $this->ip_address = $user->ip_address;
-                $this->user_agent = $user->user_agent;
-                $this->last_activity = $user->last_activity;
-                $this->created_at = $user->created_at;
-                $this->estado = $user->estado;
             }
-            // Load user data from the database
-            // $this->loadUserData($userId);
         }
-        // $this->js('alert(' . $this->userId . ')');
         $this->js('$openModal(\'cardModal\')');
-        // $this->dispatch('showModal');
-        // Logic to handle the user updated event
-        // For example, you might want to refresh the user data or show a success message
-        // session()->flash('message', 'User updated successfully!');
     }
 
     public function saveData()
@@ -57,9 +45,15 @@ class EditUserForm extends Component
             $user->name = $this->name;
             $user->email = $this->email;
             $user->save();
+
+            $this->dispatch('alertSuccess', message: 'User updated successfully!');
+            $this->js('$closeModal("cardModal")');
+            $this->reset(['name', 'email']);
+            $this->dispatch('refreshUserTable');
+            $this->dispatch('updatedNav', userId: $user->id);
         }
 
-        session()->flash('message', 'User updated successfully!');
+        // session()->flash('message', 'User updated successfully!');
     }
 
     public function render()

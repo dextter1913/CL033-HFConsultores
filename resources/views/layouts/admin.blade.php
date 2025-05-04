@@ -48,6 +48,9 @@
 
     @wireUiScripts
     @livewireScripts
+
+    {{-- Alerts --}}
+    @livewire('alerts.success-alert')
 </body>
 
 </html>
