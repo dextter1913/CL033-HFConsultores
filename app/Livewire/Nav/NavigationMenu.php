@@ -72,6 +72,5 @@ class NavigationMenu extends Component
     {
         $team = auth()->user()->currentTeam;
         return view('livewire.nav.navigation-menu', compact('team'));
-        return view('livewire.nav.navigation-menu');
     }
 }
