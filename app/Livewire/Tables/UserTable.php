@@ -101,7 +101,11 @@ final class UserTable extends PowerGridComponent
 
             Column::make('Estado', 'estado')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->contentClasses([
+                    'Activo'    => 'text-green-600',
+                    'Inactivo' => 'text-red-600'
+                ]),
 
             Column::action('Action')
         ];

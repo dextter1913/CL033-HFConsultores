@@ -3,14 +3,16 @@
 namespace App\Livewire\Forms;
 
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 
 class EditUserForm extends Component
 {
+    use AuthorizesRequests;
     use WithFileUploads;
     public $userId, $name, $email, $ip_address, $user_agent, $last_activity, $created_at, $estado, $photo;
 
@@ -31,12 +33,26 @@ class EditUserForm extends Component
 
     public function saveData()
     {
-        $this->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-        ]);
+        try {
+            $this->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->dispatch('alertDanger', message: '¡Error de validación! ' . $e->getMessage());
+            return;
+        }
 
         $user = User::find($this->userId);
+        try {
+            $this->authorize('update', $user);
+        } catch (AuthorizationException $e) {
+            $this->dispatchBrowserEvent('alertDanger', [
+                'message' => '¡No tienes permiso para cambiar la foto de perfil!'
+            ]);
+            return;
+        }
 
         if ($user) {
             if ($this->photo) {
@@ -53,8 +69,6 @@ class EditUserForm extends Component
             $this->dispatch('refreshUserTable');
             $this->dispatch('updatedNav', userId: $user->id);
         }
-
-        // session()->flash('message', 'User updated successfully!');
     }
 
     public function disconnectedSession()
@@ -62,8 +76,9 @@ class EditUserForm extends Component
         $user = User::find($this->userId);
         if ($user) {
             DB::table('sessions')->where('user_id', $user->id)->delete();
-            $this->dispatch('alertSuccess', message: '¡Usuario desconectado exitosamente!');
+            $this->dispatch('alertSuccess', message: __('¡Usuario desconectado exitosamente!'));
             $this->dispatch('refreshUserTable');
+            $this->js('$closeModal("cardModal")');
         }
     }
 

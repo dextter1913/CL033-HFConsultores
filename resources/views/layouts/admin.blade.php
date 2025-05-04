@@ -51,6 +51,9 @@
 
     {{-- Alerts --}}
     @livewire('alerts.success-alert')
+    @livewire('alerts.danger-alert')
+
+    {{-- Alpine --}}
 </body>
 
 </html>
