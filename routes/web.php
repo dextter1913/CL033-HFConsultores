@@ -4,9 +4,20 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Seguridad\LoginController;
 use App\Http\Controllers\Seguridad\UsuarioController;
 
+
+
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+    return redirect()->route('login'); // O bien, redirect('/login');
 });
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
