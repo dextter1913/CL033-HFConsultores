@@ -5,9 +5,11 @@ namespace App\Livewire\Tables;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
+use PowerComponents\LivewirePowerGrid\Facades\Rule;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
@@ -31,7 +33,22 @@ final class UserTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return User::query();
+        // Join users with sessions to get users who have sessions
+        return User::leftJoin('sessions', 'users.id', '=', 'sessions.user_id')
+            ->select(
+                'users.*',
+                'sessions.ip_address',
+                DB::raw("CASE
+                WHEN sessions.user_agent LIKE '%Chrome%' THEN 'Chrome'
+                WHEN sessions.user_agent LIKE '%Firefox%' THEN 'Firefox'
+                WHEN sessions.user_agent LIKE '%Safari%' AND sessions.user_agent NOT LIKE '%Chrome%' THEN 'Safari'
+                WHEN sessions.user_agent LIKE '%Edge%' THEN 'Edge'
+                WHEN sessions.user_agent LIKE '%Opera%' OR sessions.user_agent LIKE '%OPR%' THEN 'Opera'
+                ELSE 'Other'
+            END as user_agent"),
+                DB::raw("FROM_UNIXTIME(sessions.last_activity, '%Y-%m-%d %H:%i:%s') as last_activity"),
+                DB::raw("IF(sessions.id IS NULL, 'Inactivo', 'Activo') as estado"),
+            );
     }
 
     public function relationSearch(): array
@@ -45,7 +62,11 @@ final class UserTable extends PowerGridComponent
             ->add('id')
             ->add('name')
             ->add('email')
-            ->add('created_at');
+            ->add('ip_address')
+            ->add('user_agent')
+            ->add('last_activity')
+            ->add('created_at')
+            ->add('estado');
     }
 
     public function columns(): array
@@ -60,10 +81,23 @@ final class UserTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Created at', 'created_at_formatted', 'created_at')
-                ->sortable(),
+            Column::make('IP Address', 'ip_address')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('User Agent', 'user_agent')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('Last Activity', 'last_activity')
+                ->sortable()
+                ->searchable(),
 
             Column::make('Created at', 'created_at')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('Estado', 'estado')
                 ->sortable()
                 ->searchable(),
 
@@ -73,36 +107,35 @@ final class UserTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-        ];
+        return [];
     }
 
     #[\Livewire\Attributes\On('edit')]
     public function edit($rowId): void
     {
-        $this->js('alert('.$rowId.')');
+        $this->js('alert(' . $rowId . ')');
     }
 
     public function actions(User $row): array
     {
         return [
             Button::add('edit')
-                ->slot('Edit: '.$row->id)
+                ->slot('Edit: ' . $row->id)
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
                 ->dispatch('edit', ['rowId' => $row->id])
         ];
     }
 
-    /*
-    public function actionRules($row): array
-    {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
-    }
-    */
+
+
+    // public function actionRules($row): array
+    // {
+    //     return [
+    //         // Hide button edit for ID 1
+    //         // Rule::button('edit')
+    //         //     ->when(fn($row) => $row->id === 1)
+    //         //     ->hide(),
+    //     ];
+    // }
 }
