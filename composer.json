@@ -7,9 +7,12 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^11.9",
+        "laravel/jetstream": "^5.3",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
-        "phpoffice/phpspreadsheet": "^2.2",
+        "livewire/livewire": "^3.0",
         "phpmailer/phpmailer": "^6.9",
+        "phpoffice/phpspreadsheet": "^2.2",
         "yajra/laravel-datatables": "11.0"
     },
     "require-dev": {

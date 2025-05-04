@@ -5,25 +5,14 @@ use App\Http\Controllers\Seguridad\LoginController;
 use App\Http\Controllers\Seguridad\UsuarioController;
 
 Route::get('/', function () {
-    return redirect('/seguridad/auth/login');
+    return view('welcome');
 });
-
-/**SEGURIDAD */
-Route::prefix('seguridad')->group(function () {
-    Route::prefix('auth')->group(function () {
-        Route::get('/login', [LoginController::class, 'login'])->name('login');
-
-        Route::post('/acceso', [
-            LoginController::class,
-            'acceso'
-        ])->name('login.acceso');
-    });
-    
-    /**USUARIO */
-    Route::prefix('usuario')->group(function () {
-        Route::get('/catalogo', [
-            UsuarioController::class,
-            'catalogo'
-        ])->name('usuarios.catalogo');
-    });
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 });
