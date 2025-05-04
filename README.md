@@ -117,5 +117,23 @@ Compila los assets para desarrollo:
 ```bash
 ./vendor/bin/sail npm run dev
 ```
+## 7. Crear usuario de prueba
 
+Puedes crear un usuario de prueba ejecutando el siguiente comando Artisan:
+
+```bash
+./vendor/bin/sail artisan tinker
+```
+
+Luego, en la consola interactiva, ejecuta:
+
+```php
+\App\Models\User::create([
+    'name' => 'Test User',
+    'email' => 'testuser@example.com',
+    'password' => bcrypt('password'),
+]);
+```
+
+Esto creará un usuario con el correo `testuser@example.com` y la contraseña `password`.
 ¡Listo! El proyecto debería estar corriendo y listo para usarse.

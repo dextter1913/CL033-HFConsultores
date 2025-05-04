@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Limpia la caché de permisos de Spatie
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Crea los roles con guard_name 'web' (por defecto)
@@ -23,13 +22,11 @@ class DatabaseSeeder extends Seeder
         Role::create(['name' => 'viewer', 'guard_name' => 'web']);
         // User::factory(10)->withPersonalTeam()->create();
 
-        // Usuario Administrador
         $admin = User::factory()->withPersonalTeam()->create([
             'name'     => 'Test User',
-            'email'    => 'dextter1913@gmail.com',
-            'password' => bcrypt('Clau32290398*'),
+            'email'    => 'testuser@example.com',
+            'password' => bcrypt('password'),
         ]);
-        // Asignarle rol de admin
         $admin->assignRole('admin');
 
         // Usuarios de prueba
@@ -37,11 +34,9 @@ class DatabaseSeeder extends Seeder
             $user = User::factory()->withPersonalTeam()->create([
                 'name'     => "Test User $i",
                 'email'    => "testuser{$i}@example.com",
-                'password' => bcrypt('Clau32290398*'),
+                'password' => bcrypt('password'),
             ]);
 
-            // Aquí podrías alternar roles según lógica;
-            // por defecto les asignamos 'viewer'
             $user->assignRole('viewer');
         }
     }
