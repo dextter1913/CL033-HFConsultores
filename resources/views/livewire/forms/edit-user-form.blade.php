@@ -25,7 +25,7 @@
         </div>
 
         <x-slot name="footer" class="flex justify-between gap-x-4">
-            <x-wireui:button flat negative label="Delete" x-on:click="close" />
+            <x-wireui:button flat negative label="Disconnected" wire:click="disconnectedSession"  />
 
             <div class="flex gap-x-4">
                 <x-wireui:button flat label="Cancel" x-on:click="close" />

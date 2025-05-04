@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -54,6 +55,16 @@ class EditUserForm extends Component
         }
 
         // session()->flash('message', 'User updated successfully!');
+    }
+
+    public function disconnectedSession()
+    {
+        $user = User::find($this->userId);
+        if ($user) {
+            DB::table('sessions')->where('user_id', $user->id)->delete();
+            $this->dispatch('alertSuccess', message: '¡Usuario desconectado exitosamente!');
+            $this->dispatch('refreshUserTable');
+        }
     }
 
     public function render()
